@@ -67,6 +67,9 @@ def home():
 def jobs():
     query = request.args.get('q', '').strip()
     location_query = request.args.get('l', '').strip()
+    
+    # Mocking a last sync time (in a real app, this comes from a meta collection or the latest doc)
+    last_sync = "Just now"
 
     try:
         if db_connected:
@@ -80,22 +83,34 @@ def jobs():
             if location_query:
                 mongo_query["location"] = {"$regex": location_query, "$options": "i"}
 
-            jobs_list = list(db.jobs.find(mongo_query, {"_id": 0}).limit(20))
-            # If DB search returns nothing but we have no filters, show fallback? 
-            # Actually, just return what we found.
-            if not jobs_list and not query and not location_query:
-                return jsonify(FALLBACK_JOBS)
-            return jsonify(jobs_list)
+            jobs_list = list(db.jobs.find(mongo_query, {"_id": 0}).sort("created_at", -1).limit(20))
+            
+            # Simple metadata wrapper
+            return jsonify({
+                "jobs": jobs_list if jobs_list else (FALLBACK_JOBS if not (query or location_query) else []),
+                "last_updated": last_sync,
+                "count": len(jobs_list)
+            })
         else:
-            # Simple local search on fallback data for robustness
+            # Fallback logic
             results = FALLBACK_JOBS
             if query:
                 results = [j for j in results if query.lower() in j['title'].lower() or query.lower() in j['company'].lower()]
             if location_query:
                 results = [j for j in results if location_query.lower() in j['location'].lower()]
-            return jsonify(results)
+            
+            return jsonify({
+                "jobs": results,
+                "last_updated": "Fallback Mode (Live Sync Paused)",
+                "count": len(results)
+            })
     except Exception as e:
-        return jsonify({"error": str(e), "status": 500, "fallback": FALLBACK_JOBS}), 200 # Return 200 with fallback on error
+        return jsonify({
+            "error": str(e),
+            "jobs": FALLBACK_JOBS,
+            "last_updated": "Review Needed",
+            "count": len(FALLBACK_JOBS)
+        }), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
