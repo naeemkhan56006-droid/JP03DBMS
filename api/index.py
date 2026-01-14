@@ -2,8 +2,12 @@ import os
 from flask import Flask, render_template, jsonify, request
 from pymongo import MongoClient
 
-# Configure Flask to find templates and static files in the root directory
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
+# Resolve absolute paths for Vercel and local runs
+base_dir = os.path.dirname(os.path.abspath(__file__))
+template_dir = os.path.join(base_dir, '..', 'templates')
+static_dir = os.path.join(base_dir, '..', 'static')
+
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 
 # Fallback data for demonstration and robustness
 FALLBACK_JOBS = [
@@ -49,9 +53,11 @@ try:
     # Quick check to see if we can connect
     client.server_info()
     db_connected = True
-except Exception:
+    print("Successfully connected to MongoDB Atlas.")
+except Exception as e:
     db_connected = False
-    print("Warning: MongoDB connection failed. Using fallback data.")
+    print(f"Warning: MongoDB connection failed: {str(e)}")
+    print("Using fallback data for preview.")
 
 @app.route('/')
 def home():
