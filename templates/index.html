@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NJP Global | Executive Job Bridge</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar">
@@ -35,29 +39,77 @@
                 <div class="search-bridge">
                     <div class="search-input">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="jobSearch" placeholder="Search by job title, company, or keywords..." onkeyup="filterJobs()">
+                        <input type="text" id="jobSearch" placeholder="Search title, company..." onkeyup="filterJobs()">
                     </div>
                     <div class="search-input">
                         <i class="fas fa-map-marker-alt"></i>
                         <input type="text" id="locationSearch" placeholder="Location..." onkeyup="filterJobs()">
                     </div>
-                    <button class="btn-gold">Search Jobs</button>
+                    <button class="btn-gold" onclick="filterJobs()">Search</button>
+                    <button class="btn-clear" onclick="clearSearch()" title="Clear Search"><i
+                            class="fas fa-times"></i></button>
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- Statistics Dashboard -->
+    <div class="stats-dashboard container">
+        <div class="stat-box glass-card">
+            <i class="fas fa-briefcase"></i>
+            <div class="stat-info">
+                <span id="totalJobs">0</span>
+                <p>Total Jobs Found</p>
+            </div>
+        </div>
+        <div class="stat-box glass-card">
+            <i class="fas fa-map-marked-alt"></i>
+            <div class="stat-info">
+                <span id="topLocation">N/A</span>
+                <p>Top Location</p>
+            </div>
+        </div>
+        <div class="stat-box glass-card">
+            <i class="fas fa-chart-line"></i>
+            <div class="stat-info">
+                <span id="trendingCategory">N/A</span>
+                <p>Trending Category</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Bridge Sections -->
-    <main class="container">
+    <main class="container main-layout">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar glass-card">
+            <h3>Advanced Filters</h3>
+            <div class="filter-group">
+                <label>Job Type</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="jobType" value="Full-time" onchange="filterJobs()">
+                        Full-time</label>
+                    <label><input type="checkbox" name="jobType" value="Contract" onchange="filterJobs()">
+                        Contract</label>
+                    <label><input type="checkbox" name="jobType" value="Executive" onchange="filterJobs()">
+                        Executive</label>
+                    <label><input type="checkbox" name="jobType" value="Remote" onchange="filterJobs()"> Remote</label>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label>Recent Locations</label>
+                <div id="locationFilters" class="checkbox-group">
+                    <!-- Dynamic locations will be added here -->
+                </div>
+            </div>
+        </aside>
+
         <!-- Job Discovery (Seeker Side) -->
-        <section id="find-work" class="section">
+        <section id="find-work" class="content-area">
             <div class="section-header">
                 <h2>Job Discovery</h2>
-                <div class="filters">
-                    <span class="active">All Jobs</span>
-                    <span>Remote</span>
-                    <span>Executive</span>
-                    <span>Contract</span>
+                <div class="view-toggle">
+                    <i class="fas fa-th-large active"></i>
+                    <i class="fas fa-list"></i>
                 </div>
             </div>
             <div id="jobGrid" class="job-grid">
@@ -65,25 +117,37 @@
                 <div class="loader">Loading opportunities...</div>
             </div>
         </section>
+    </main>
 
-        <!-- Employer Dashboard Preview -->
-        <section id="post-job" class="section employer-section">
-            <div class="glass-card employer-cta">
-                <div class="cta-content">
-                    <h2>For Employers</h2>
-                    <p>Access our curated network of top-tier professionals. Post your requirements and find your next executive leader.</p>
-                    <div class="cta-stats">
-                        <div class="stat"><span>5k+</span> Active Seekers</div>
-                        <div class="stat"><span>98%</span> Success Rate</div>
-                        <div class="stat"><span>24h</span> Average Response</div>
-                    </div>
-                    <button class="btn-gold large">Post a Premium Job</button>
-                </div>
-                <div class="cta-image">
-                    <i class="fas fa-briefcase"></i>
-                </div>
+    <!-- Job Detail Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content glass-card large-modal">
+            <span class="close" onclick="closeModal('detailsModal')">&times;</span>
+            <div id="modalBody">
+                <!-- Content injected via JS -->
             </div>
-        </section>
+        </div>
+    </div>
+
+    <!-- Employer Dashboard Preview -->
+    <section id="post-job" class="section employer-section">
+        <div class="glass-card employer-cta">
+            <div class="cta-content">
+                <h2>For Employers</h2>
+                <p>Access our curated network of top-tier professionals. Post your requirements and find your next
+                    executive leader.</p>
+                <div class="cta-stats">
+                    <div class="stat"><span>5k+</span> Active Seekers</div>
+                    <div class="stat"><span>98%</span> Success Rate</div>
+                    <div class="stat"><span>24h</span> Average Response</div>
+                </div>
+                <button class="btn-gold large">Post a Premium Job</button>
+            </div>
+            <div class="cta-image">
+                <i class="fas fa-briefcase"></i>
+            </div>
+        </div>
+    </section>
     </main>
 
     <!-- Modals -->
@@ -163,4 +227,5 @@
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
+
 </html>
