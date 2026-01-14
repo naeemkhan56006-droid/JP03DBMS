@@ -14,10 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-async function fetchJobs() {
+async function fetchJobs(query = '', location = '') {
     const jobGrid = document.getElementById('jobGrid');
     try {
-        const response = await fetch('/api/jobs');
+        const url = `/api/jobs?q=${encodeURIComponent(query)}&l=${encodeURIComponent(location)}`;
+        const response = await fetch(url);
         const data = await response.json();
 
         // Handle both direct array and error responses with fallback
@@ -67,18 +68,14 @@ function displayJobs(jobs) {
     `).join('');
 }
 
+let searchTimeout;
 function filterJobs() {
-    const titleQuery = document.getElementById('jobSearch').value.toLowerCase();
-    const locationQuery = document.getElementById('locationSearch').value.toLowerCase();
-
-    const filteredJobs = allJobs.filter(job => {
-        const matchesTitle = job.title.toLowerCase().includes(titleQuery) ||
-            job.company.toLowerCase().includes(titleQuery);
-        const matchesLocation = job.location.toLowerCase().includes(locationQuery);
-        return matchesTitle && matchesLocation;
-    });
-
-    displayJobs(filteredJobs);
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        const titleQuery = document.getElementById('jobSearch').value;
+        const locationQuery = document.getElementById('locationSearch').value;
+        fetchJobs(titleQuery, locationQuery);
+    }, 300); // 300ms debounce
 }
 
 // Modal Logic

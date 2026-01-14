@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from pymongo import MongoClient
 
 # Configure Flask to find templates and static files in the root directory
@@ -59,15 +59,35 @@ def home():
 
 @app.route('/api/jobs')
 def jobs():
+    query = request.args.get('q', '').strip()
+    location_query = request.args.get('l', '').strip()
+
     try:
         if db_connected:
-            jobs_list = list(db.jobs.find({}, {"_id": 0}).limit(20))
-            # If DB is empty, use fallback
-            if not jobs_list:
+            mongo_query = {}
+            if query:
+                mongo_query["$or"] = [
+                    {"title": {"$regex": query, "$options": "i"}},
+                    {"company": {"$regex": query, "$options": "i"}},
+                    {"category": {"$regex": query, "$options": "i"}}
+                ]
+            if location_query:
+                mongo_query["location"] = {"$regex": location_query, "$options": "i"}
+
+            jobs_list = list(db.jobs.find(mongo_query, {"_id": 0}).limit(20))
+            # If DB search returns nothing but we have no filters, show fallback? 
+            # Actually, just return what we found.
+            if not jobs_list and not query and not location_query:
                 return jsonify(FALLBACK_JOBS)
             return jsonify(jobs_list)
         else:
-            return jsonify(FALLBACK_JOBS)
+            # Simple local search on fallback data for robustness
+            results = FALLBACK_JOBS
+            if query:
+                results = [j for j in results if query.lower() in j['title'].lower() or query.lower() in j['company'].lower()]
+            if location_query:
+                results = [j for j in results if location_query.lower() in j['location'].lower()]
+            return jsonify(results)
     except Exception as e:
         return jsonify({"error": str(e), "status": 500, "fallback": FALLBACK_JOBS}), 200 # Return 200 with fallback on error
 
