@@ -10,6 +10,11 @@ db = MongoClient("mongodb+srv://admin:naeem123@cluster0.mongodb.net/njp_global")
 def home(): return render_template('index.html')
 
 @app.route('/api/jobs')
-def jobs(): return jsonify(list(db.jobs.find({}, {"_id":0}).limit(20)))
+def jobs():
+    try:
+        jobs_list = list(db.jobs.find({}, {"_id":0}).limit(20))
+        return jsonify(jobs_list)
+    except Exception as e:
+        return jsonify({"error": str(e), "status": 500}), 500
 
 if __name__ == '__main__': app.run()

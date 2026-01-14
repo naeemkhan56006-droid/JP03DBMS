@@ -1,4 +1,5 @@
 flask
 pymongo[srv]
+dnspython
 requests
 gunicorn
