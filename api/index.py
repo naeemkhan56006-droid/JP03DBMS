@@ -42,7 +42,7 @@ FALLBACK_JOBS = [
 ]
 
 # MongoDB Setup with environment variable and error handling
-MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://admin:naeem123@cluster0.mongodb.net/njp_global")
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://naeem:khan4321@cluster0.mongodb.net/njp_global")
 try:
     client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
     db = client.njp_global
