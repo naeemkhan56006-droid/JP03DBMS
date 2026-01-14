@@ -21,7 +21,10 @@ body {
     overflow-x: hidden;
 }
 
-h1, h2, h3, .logo {
+h1,
+h2,
+h3,
+.logo {
     font-family: 'Playfair Display', serif;
 }
 
@@ -76,7 +79,8 @@ h1, h2, h3, .logo {
     letter-spacing: 1px;
 }
 
-.nav-links a:hover, .nav-links a.active {
+.nav-links a:hover,
+.nav-links a.active {
     color: var(--gold);
 }
 
@@ -169,7 +173,7 @@ h1, h2, h3, .logo {
     display: flex;
     align-items: center;
     padding: 0 15px;
-    border-right: 1px solid rgba(255,255,255,0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .search-input:last-of-type {
@@ -259,7 +263,9 @@ h1, h2, h3, .logo {
 .job-card:hover {
     transform: translateY(-10px);
     border-color: var(--gold);
-    box-shadow: 0 10px 30px rgba(var(--gold-rgb), 0.15);
+    box-shadow: 0 15px 45px rgba(var(--gold-rgb), 0.25),
+        0 0 15px rgba(var(--gold-rgb), 0.1);
+    background: rgba(var(--gold-rgb), 0.05);
 }
 
 .job-card::before {
@@ -333,7 +339,7 @@ h1, h2, h3, .logo {
 .job-card .salary {
     margin-top: 25px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -399,7 +405,7 @@ h1, h2, h3, .logo {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(5px);
 }
 
@@ -438,8 +444,8 @@ h1, h2, h3, .logo {
 
 .form-group input {
     width: 100%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 12px;
     color: #fff;
     border-radius: 4px;
@@ -452,7 +458,7 @@ h1, h2, h3, .logo {
 
 .user-type-toggle {
     display: flex;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     padding: 5px;
     border-radius: 8px;
     margin-bottom: 30px;
@@ -494,7 +500,8 @@ h1, h2, h3, .logo {
     max-width: 300px;
 }
 
-.footer-links h4, .footer-social h4 {
+.footer-links h4,
+.footer-social h4 {
     color: #fff;
     margin-bottom: 20px;
     font-size: 18px;
@@ -531,7 +538,7 @@ h1, h2, h3, .logo {
     color: #444;
     font-size: 13px;
     padding-top: 30px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .loader {
